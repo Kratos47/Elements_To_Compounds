@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ////////////////
+//////head//////
+//////////////// -->
+
+<head>
+    <title>Elements_To_Compounds</title>
+    <script src="js/fabric.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/helper.css.css">
+</head>
+<body>
+    <div id="levelOne">
+        <canvas id="main"></canvas>
+
+        <!-- ////////////////
+    //////GAME LOGIC//////
+    //////////////// -->
+
+
+        <script>
+
+            ////variables
+            //var cahncesLeft = 3;
+            //var QuestionsLeft = 3;
+
+            //var NACL = false;
+            //var naInBeaker = false;
+            //var clInBeaker = false;
+            //var firstObjectInBeaker = false;
+            //var mainCanvas;
+            //var playArea;
+            //var cahncesText;
+            //var Beaker;
+            //var numChancesText;
+
+            ////Question state enums
+            //const QuestionState =
+            //{
+            //    NACL: 'nacl',
+            //}
+
+            ////Init function
+            //function initCanvas() {
+            //    //NACL = false;
+            //    //naInBeaker = false;
+            //    //clInBeaker = false;
+            //    //firstObjectInBeaker = false;
+
+            //    // create a playArea object
+            //    playArea = new fabric.Rect({
+            //        left: 30,
+            //        top: 50,
+            //        fill: 'orange',
+            //        width: 300,
+            //        height: 300,
+            //        hasControls: false,
+            //        lockMovementX: true,
+            //        lockMovementY: true,
+            //        selectable: false,
+            //        evented: false,
+            //    });
+
+            //    // "add" playArea onto canvas
+            //    mainCanvas.add(playArea);
+
+            //    // create a cahncesText object
+            //    cahncesText = new fabric.Text('ChancesLeft: ', {
+            //        left: 30,
+            //        top: 20,
+            //        fill: 'black',
+            //        fontSize: 20,
+            //        fontWeight: 'bold',
+            //        hasControls: false,
+            //        lockMovementX: true,
+            //        lockMovementY: true,
+            //    });
+
+            //    // "add" cahncesText onto canvas
+            //    mainCanvas.add(cahncesText);
+
+
+            //    // create a numChancesText object
+            //    numChancesText = new fabric.Text(
+            //        'You get three questions to answer. Good Luck!',
+            //        {
+            //            left: 20,
+            //            top: 400,
+            //            fill: 'white',
+            //            fontSize: 20,
+            //            fontWeight: 'bold',
+            //            hasControls: false,
+            //        });
+
+            //    // "add" cahncesText onto canvas
+            //    mainCanvas.add(numChancesText);
+
+            //    // create a Beaker object
+            //    Beaker = new fabric.Rect({
+            //        left: 250,
+            //        top: 200,
+            //        fill: 'black',
+            //        width: 70,
+            //        height: 100,
+            //        hasControls: false,
+            //        lockMovementX: true,
+            //        lockMovementY: true,
+            //    });
+
+            //    // "add" Beaker onto canvas
+            //    mainCanvas.add(Beaker);
+            //}
+
+            ////Function to handel beaker and object interation
+            //function onChange(options, element1, element2, name1, name2) {
+            //    options.target.setCoords();
+            //    mainCanvas.forEachObject(function (obj) {
+            //        if (obj === options.target || obj === playArea) {
+            //            return;
+            //        }
+            //        if (options.target === element1 &&
+            //            options.target.intersectsWithObject(obj)) {
+            //            console.log(name1 + 'dropped in beaker');
+            //            naInBeaker = true;
+            //        }
+
+            //        if (options.target === CL_Text &&
+            //            options.target.intersectsWithObject(obj)) {
+            //            console.log(name2 + 'dropped in beaker');
+            //            clInBeaker = true;
+            //        }
+
+            //        //if the active object is in beaker discard
+            //        mainCanvas.discardActiveObject();
+
+            //        if (naInBeaker && clInBeaker) { NACL = true; }
+
+            //        obj.set('opacity',
+            //            options.target.intersectsWithObject(obj) ? 0.5 : 1);
+            //    });
+            //}
+
+
+        </script>
+
+
+
+        <!--NACL Qestion-->
+        <script>
+
+            //variables
+            var cahncesLeft = 3;
+            var QuestionsLeft = 3;
+
+            var NACL = false;
+            var naInBeaker = false;
+            var clInBeaker = false;
+            var firstObjectInBeaker = false;
+            //var mainCanvas;
+            //var playArea;
+            //var cahncesText;
+            //var Beaker;
+            //var numChancesText;
+
+            var mainCanvas = new fabric.Canvas('main', {
+                width: 500,
+                height: 500,
+                backgroundColor: 'blue',
+                selection: false,
+            });
+
+            //Question state enums
+            const QuestionState =
+            {
+                NACL: 'nacl',
+            }
+
+            //Init function
+           // function initCanvas() {
+                //NACL = false;
+                //naInBeaker = false;
+                //clInBeaker = false;
+                //firstObjectInBeaker = false;
+
+                // create a playArea object
+            var playArea = new fabric.Rect({
+                    left: 30,
+                    top: 50,
+                    fill: 'orange',
+                    width: 300,
+                    height: 300,
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    selectable: false,
+                    evented: false,
+                });
+
+                // "add" playArea onto canvas
+             mainCanvas.add(playArea);
+
+                // create a cahncesText object
+            var    cahncesText = new fabric.Text('ChancesLeft: ', {
+                    left: 30,
+                    top: 20,
+                    fill: 'black',
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                });
+
+                // "add" cahncesText onto canvas
+                mainCanvas.add(cahncesText);
+
+
+                // create a numChancesText object
+            var   numChancesText = new fabric.Text(
+                    'You get three questions to answer. Good Luck!',
+                    {
+                        left: 20,
+                        top: 400,
+                        fill: 'white',
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                        hasControls: false,
+                    });
+
+                // "add" cahncesText onto canvas
+                mainCanvas.add(numChancesText);
+
+                // create a Beaker object
+            var   Beaker = new fabric.Rect({
+                    left: 250,
+                    top: 200,
+                    fill: 'black',
+                    width: 70,
+                    height: 100,
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                });
+
+                // "add" Beaker onto canvas
+                mainCanvas.add(Beaker);
+
+            // initialize the canvas
+            //initCanvas();
+
+            // create a NA_Text object
+            var NA_Text = new fabric.Text('NA', {
+                left: 200,
+                top: 300,
+                fill: 'white',
+                fontSize: 15,
+                fontWeight: 'bold',
+                hasControls: false,
+            });
+
+            // "add" NA_Text onto canvas
+            mainCanvas.add(NA_Text);
+
+            //log when NA selected
+            NA_Text.on('selected', function () {
+                console.log('selected NA_Text');
+            });
+
+            // create a CL_Text object
+            var CL_Text = new fabric.Text('CL', {
+                left: 100,
+                top: 300,
+                fill: 'white',
+                fontSize: 15,
+                fontWeight: 'bold',
+                hasControls: false,
+            });
+
+            // "add" CL_Text onto canvas
+            mainCanvas.add(CL_Text);
+
+            //log when CL selected
+            CL_Text.on('selected', function () {
+                console.log('selected CL_Text');
+            });
+
+            // create a qestionText object
+            var qestionText = new fabric.Text(
+                'Q. Put the compunds in the beaker that Make up sodium chloride',
+                {
+                    left: 20,
+                    top: 450,
+                    fill: 'white',
+                    fontSize: 15,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                });
+            // "add" qestionText onto canvas
+            mainCanvas.add(qestionText);
+
+            //log when current selected object is moving
+            mainCanvas.on({
+                'object:moving': onChange,
+            });
+
+            //Function to handel beaker and object interation
+            function onChange(options) {
+                options.target.setCoords();
+                mainCanvas.forEachObject(function (obj) {
+                    if (obj === options.target || obj === playArea) {
+                        return;
+                    }
+                    if (options.target === NA_Text &&
+                        options.target.intersectsWithObject(obj)) {
+                        console.log('NA dropped in beaker');
+                        naInBeaker = true;
+                    }
+
+                    if (options.target === CL_Text &&
+                        options.target.intersectsWithObject(obj)) {
+                        console.log('CL dropped in beaker');
+                        clInBeaker = true;
+                    }
+
+                    //if the active object is in beaker discard
+                    mainCanvas.discardActiveObject();
+
+                    if (naInBeaker && clInBeaker) { NACL = true; }
+
+                    obj.set('opacity',
+                        options.target.intersectsWithObject(obj) ? 0.5 : 1);
+                });
+            }
+
+        </script>
+
+        <script>
+            //Sumbit state enums
+            const SubmitState = {
+                INIT: 'init',
+                SUBMITTED: 'submitted',
+                SUBMITING: 'submiting',
+                NEXTQUESTION: 'nextquestion',
+                NOCHANCE: 'nochance'
+            }
+        </script>
+
+        <script>
+            let submitState = SubmitState.INIT;
+
+            var cahncesLeftTxt = new fabric.Text(cahncesLeft.toString(), {
+                left: 150,
+                top: 20,
+                fill: 'black',
+                fontSize: 20,
+                fontWeight: 'bold',
+                hasControls: false,
+                lockMovementX: true,
+                lockMovementY: true,
+            });
+            mainCanvas.add(cahncesLeftTxt);
+
+            function answerText() {
+                if (submitState === SubmitState.SUBMITTED ||
+                    submitState === SubmitState.INIT) {
+                    if (NACL)
+                        document.getElementById('successText').style.display = 'block';
+                    else
+                        document.getElementById('faliureText').style.display = 'block';
+
+                    mainCanvas.add(cahncesLeftTxt);
+
+                    if (cahncesLeft >= 1) {
+                        cahncesLeft--;
+                        cahncesLeftTxt.set({ text: cahncesLeft.toString() });
+                    }
+
+                    console.log(cahncesLeft.toString());
+
+                    submitState = SubmitState.SUBMITING;
+                }
+            }
+
+            setInterval(function answerText() {
+                if (submitState != SubmitState.NOCHANCE) {
+
+                    if (NACL)
+                        document.getElementById('successText').style.display = 'none';
+                    else
+                        document.getElementById('faliureText').style.display = 'none';
+
+                    if (cahncesLeft !== 0)
+                        submitState = SubmitState.SUBMITTED;
+                    else
+                        submitState === SubmitState.NOCHANCE
+                }
+            }, 2000)
+
+        </script>
+
+
+
+        <!-- ////////////////
+    //////OTHER//////
+    //////////////// -->
+
+        <div id="leveltwo">
+            <button class="submitButton"
+                    button type=button
+                    onclick="answerText()">
+                Submit
+            </button>
+            <div id="levelthree">
+                <p id="faliureText" style="
+                 position: relative;
+                  left: 355px;
+                    top: -500px;
+                    font-size: 20px;
+                    display:none"
+                   text-align: center;>
+                    <b>FAILIURE!</b>
+                </p>
+
+                <p id="successText" style="
+                 position: relative;
+                  left: 355px;
+                    top: -500px;
+                    font-size: 20px;
+                    display:none"
+                   text-align: center;>
+                    <b>SUCCESS!</b>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+<!-- ////////////////
+    //////END///////
+    //////////////// -->
+
+</html>

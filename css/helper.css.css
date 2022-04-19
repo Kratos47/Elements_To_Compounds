@@ -1,0 +1,62 @@
+.submitButton 
+{
+    position: relative;
+    left: 30px;
+    top:  -245px;
+    background-color: #808080; 
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    transition-duration: 0.4s;
+    width : 110px;
+    height: 35px;
+    
+}
+.submitButton:hover 
+{
+    background-color: #4CAF50; 
+    color: white;
+}
+
+.nextQuestionButton {
+    position: relative;
+    left: 107px;
+    top: -245px;
+    background-color: #808080; 
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    transition-duration: 0.4s;
+    width: 110px;
+    height: 35px;
+}
+    .nextQuestionButton:hover {
+        background-color: #1136dcff; 
+        color: white;
+    }
+
+.resetButton {
+    position: relative;
+    left: -100px;
+    top: -195px;
+    background-color: #808080; 
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    transition-duration: 0.4s;
+    width: 110px;
+    height: 35px;
+}
+    .resetButton:hover {
+        background-color: #eb0909;
+        color: white;
+    }

@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- ////////////////
+//////head//////
+//////////////// -->
+
+<head>
+    <title>Elements_To_Compounds</title>
+    <script src="js/fabric.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/helper.css.css">
+</head>
+<body>
+    <div id="levelOne">
+        <canvas id="main"></canvas>
+
+        <!-- ////////////////
+    //////GAME LOGIC//////
+    //////////////// -->
+
+        <script>
+            //variables
+
+            var mainCanvas;
+            var playArea;
+            var chancesLeft;
+            var Beaker;
+            var BeakerText;
+            var questionText;
+            var successFailText;
+            var nextQuestionText;
+
+            var NA_Text;
+            var CL_Text;
+            var CU_Text;
+            var O_Text;
+            var AG_Text;
+            var BR_Text;
+            var naInBeaker = false;
+            var clInBeaker = false;
+            var cuInBeaker = false;
+            var oInBeaker = false;
+            var agInBeaker = false;
+            var brInBeaker = false;
+
+            var answer = false;
+            var cahncesLeft = 3;
+            var numChancesText;
+            var chancesLeftTxt;
+            var scoreTxt;
+            var currScore = 0;
+            var currScoreTxt;
+            var pleaseResetTxt;
+
+            //Qestion state ENUM
+            const QuestionState = {
+                INIT: 'init',
+                NACL: 'sodium_chloride',
+                CUO: 'copper_oxide',
+                AGBR: 'silver_bromide',
+                KI: 'potassium_iodide',
+                CAS: 'calcium_sulphide',
+                KOH: 'potassium_hydroxide',
+            }
+            var questionState = QuestionState.INIT;
+
+            //Submit State ENUM
+            const SubmitState = {
+                INIT: 'init',
+                SUBMITTED: 'submitted',
+                NEXTQUESTION: 'nextquestion',
+                NOCHANCE: 'nochance'
+            }
+
+            var submitState = SubmitState.INIT;
+
+            //NACL question
+            function questionNACL() {
+                questionState = QuestionState.NACL;
+                questionText.set({
+                    text: 'Q.Drag the elemets in the beaker that Make up' +
+                        '\n    sodium chloride and hit submit.'
+                });
+            }
+
+            //CUO question
+            function questionCUO() {
+                questionState = QuestionState.CUO;
+                questionText.set({
+                    text: 'Q.Drag the elemets in the beaker that Make up' +
+                        '\n    copperoxide and hit submit.'
+                });
+            }
+
+            //AGBR question
+            function questionAGBR() {
+                questionState = QuestionState.AGBR;
+                questionText.set({
+                    text: 'Q.Drag the elemets in the beaker that Make up' +
+                        '\n    silver bromide and hit submit.'
+                });
+            }
+
+            //Function to randomise questions
+            function randomQuestionStates() {
+                const random = Math.floor(Math.random() * 2);
+
+                switch (random) {
+                    case 0:
+                        questionNACL();
+                        console.log('curr state = ' + questionState);
+                        break;
+                    case 1:
+                        questionCUO();
+                        console.log('curr state = ' + questionState);
+                        break;
+                    //case 2:
+                    //    questionAGBR();
+                    //    console.log('curr state = ' + questionState);
+                    //    break;
+                    //case 3:
+                    //    questionState = QuestionState.KL;
+                    //    break;
+                    //case 4:
+                    //    questionState = QuestionState.HCl;
+                    //    break;
+                    //case 5:
+                    //    questionState = QuestionState.KOH;
+                    //    break;
+                    default:
+                }
+            }
+
+            //initialize game implementation
+            function initFunc() {
+
+                // create a wrapper around native canvas element (with id="main")
+                mainCanvas = new fabric.Canvas('main', {
+                    width: 500,
+                    height: 600,
+                    backgroundColor: 'purple',
+                    selection: false,
+                });
+
+                // create a playArea object
+                playArea = new fabric.Rect({
+                    left: 30,
+                    top: 50,
+                    fill: 'orange',
+                    width: 300,
+                    height: 300,
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    selectable: false,
+                    evented: false,
+                });
+
+                // "add" playArea onto canvas
+                mainCanvas.add(playArea);
+
+                // create a numChancesText object
+                numChancesText = new fabric.Text(
+                    'You get three questions to answer. Good Luck!',
+                    {
+                        left: 20,
+                        top: 450,
+                        fill: 'white',
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                        hasControls: false,
+                        lockMovementX: true,
+                        lockMovementY: true,
+                        selectable: false,
+                    });
+
+                // "add" numChancesText onto canvas
+                mainCanvas.add(numChancesText);
+
+                // create a chancesLeft object
+                chancesLeft = new fabric.Text('ChancesLeft: ', {
+                    left: 30,
+                    top: 20,
+                    fill: 'black',
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    selectable: false,
+                });
+                // "add" chancesLeft onto canvas
+                mainCanvas.add(chancesLeft);
+
+
+                // create a chancesLeftTxt object
+                chancesLeftTxt = new fabric.Text(cahncesLeft.toString(), {
+                    left: 150,
+                    top: 20,
+                    fill: 'black',
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    selectable: false,
+                });
+                // "add" chancesLeftTxt onto canvas
+                mainCanvas.add(chancesLeftTxt);
+
+                // create a scoreTxt object
+                scoreTxt = new fabric.Text('Score: ', {
+                    left: 200,
+                    top: 20,
+                    fill: 'black',
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    selectable: false,
+                });
+                // "add" scoreTxt onto canvas
+                mainCanvas.add(scoreTxt);
+
+                // create a currScoreTxt object
+                currScoreTxt = new fabric.Text(currScore.toString(), {
+                    left: 260,
+                    top: 20,
+                    fill: 'black',
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    selectable: false,
+                });
+                mainCanvas.add(currScoreTxt);
+
+                // create a successFailText object
+                successFailText = new fabric.Text('', {
+                    left: 360,
+                    top: 120,
+                    fill: 'black',
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    selectable: false,
+                });
+                // "add" successFailText onto canvas
+                mainCanvas.add(successFailText);
+
+                // create a nextQuestionText object
+                nextQuestionText = new fabric.Text('', {
+                    left: 360,
+                    top: 320,
+                    fill: 'white',
+                    fontSize: 15,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    selectable: false,
+                });
+                // "add" nextQuestionText onto canvas
+                mainCanvas.add(nextQuestionText);
+
+                // create a pleaseResetTxt object
+                pleaseResetTxt = new fabric.Text('', {
+                    left: 360,
+                    top: 220,
+                    fill: 'white',
+                    fontSize: 15,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    selectable: false,
+                });
+                // "add" pleaseResetTxt onto canvas
+                mainCanvas.add(pleaseResetTxt);
+
+                // create a Beaker object
+                Beaker = new fabric.Rect({
+                    left: 250,
+                    top: 200,
+                    fill: 'black',
+                    width: 70,
+                    height: 100,
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    selectable: false,
+                    opacity: 0.5,
+                    zIndex: 0
+                });
+
+                // "add" Beaker onto canvas
+                mainCanvas.add(Beaker);
+
+                // create a Beaker object
+                BeakerText = new fabric.Text('BEAKER', {
+                    left: 255,
+                    top: 200,
+                    fill: 'blue',
+                    width: 70,
+                    height: 100,
+                    fontSize: 15,
+                    hasControls: false,
+                    lockMovementX: true,
+                    lockMovementY: true,
+                    selectable: false,
+                    zIndex: 0
+                });
+
+                // "add" Beaker onto canvas
+                mainCanvas.add(BeakerText);
+
+                // create a NA_Text object
+                NA_Text = new fabric.Text('Na', {
+                    left: 200,
+                    top: 300,
+                    fill: 'white',
+                    fontSize: 15,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                    zIndex: 1
+                });
+
+                // "add" NA_Text onto canvas
+                mainCanvas.add(NA_Text);
+
+                // log NA_Text when selected
+                NA_Text.on('selected', function () {
+                    console.log('selected NA_Text');
+                });
+
+                // create a CL_Text object
+                CL_Text = new fabric.Text('Cl', {
+                    left: 100,
+                    top: 300,
+                    fill: 'white',
+                    fontSize: 15,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                    zIndex: 1
+                });
+
+                // "add" CL_Text onto canvas
+                mainCanvas.add(CL_Text);
+
+                // log CL_Text when selected
+                CL_Text.on('selected', function () {
+                    console.log('selected CL_Text');
+                });
+
+                // create a CU_Text object
+                CU_Text = new fabric.Text('Cu', {
+                    left: 200,
+                    top: 270,
+                    fill: 'white',
+                    fontSize: 15,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                    zIndex: 1
+                });
+
+                // "add" CU_Text onto canvas
+                mainCanvas.add(CU_Text);
+
+                // log CU_Text when selected
+                CU_Text.on('selected', function () {
+                    console.log('selected CU_Text');
+                });
+
+                // create a O_Text object
+                O_Text = new fabric.Text('O', {
+                    left: 100,
+                    top: 270,
+                    fill: 'white',
+                    fontSize: 15,
+                    fontWeight: 'bold',
+                    hasControls: false,
+                    zIndex: 1
+                });
+
+                // "add" O_Text onto canvas
+                mainCanvas.add(O_Text);
+
+                // log O_Text when selected
+                O_Text.on('selected', function () {
+                    console.log('selected O_Text');
+                });
+
+                //event for object moving
+                mainCanvas.on({
+                    'object:moving': inBeaker,
+                });
+
+                // intersection of current elemet with beaker
+                function inBeaker(options) {
+                    options.target.setCoords();
+                    checkBeaker(options);
+                }
+
+                //Text for the current question depending of question state
+                questionText = new fabric.Text(
+                    '',
+                    {
+                        left: 20,
+                        top: 500,
+                        fill: 'white',
+                        fontSize: 15,
+                        fontWeight: 'bold',
+                        hasControls: false,
+                        lockMovementX: true,
+                        lockMovementY: true,
+                        selectable: false,
+                    });
+
+                // "add" current questionText onto canvas
+                mainCanvas.add(questionText);
+
+                //Call random state to start with
+                randomQuestionStates();
+
+            } initFunc(); //Initialize the game
+
+
+            //check flags for element-Beaker collision to work
+            function checkFlags(questionState) {
+                if (questionState === QuestionState.NACL) {
+
+                    if (!cuInBeaker && !oInBeaker)
+                        return true;
+                    else
+                        return false;
+                }
+                if (questionState === QuestionState.CUO) {
+
+                    if (!naInBeaker && !clInBeaker)
+                        return true;
+                    else
+                        return false;
+                }
+            }
+
+            //function to handle elemets collision with beaker
+            //and to help decide the success/fail condition
+            function checkBeaker(options) {
+                mainCanvas.forEachObject(function (obj) {
+
+                    //if object is not in the beaker
+                    if (obj === options.target || obj === playArea) {
+                        return;
+                    }
+
+
+                    //if na is in the beaker and mouse: up triggerd
+                    if (options.target === NA_Text &&
+                        options.target.intersectsWithObject(Beaker)) {
+                        naInBeaker = true;
+                        console.log('naInBeaker = true;');
+                    }
+                    //if na is not in the beaker and mouse: up triggerd
+                    if (options.target === NA_Text &&
+                        !options.target.intersectsWithObject(Beaker)) {
+                        naInBeaker = false;
+                        console.log('naInBeaker = false;');
+                    }
+
+                    //if cl is in the beaker and mouse: up triggerd
+                    if (options.target === CL_Text &&
+                        options.target.intersectsWithObject(Beaker)) {
+                        clInBeaker = true;
+                        console.log('clInBeaker = true;');
+                    }
+                    //if cl is not in the beaker and mouse: up triggerd
+                    if (options.target === CL_Text &&
+                        !options.target.intersectsWithObject(Beaker)) {
+                        clInBeaker = false;
+                        console.log('clInBeaker = false;');
+                    }
+
+                    //need to check only na and cl are in the beaker
+                    //and nothing else
+                    if (questionState === QuestionState.NACL) {
+                        //if both na and cl are in the beaker
+                        if (naInBeaker && clInBeaker) { answer = true; }
+
+                        //if na and cl both are still in beaker
+                        //if nothing else is in beaker
+                        if (!naInBeaker ||
+                            !clInBeaker ||
+                            !checkFlags(QuestionState.NACL)) { answer = false; }
+                    }
+
+
+                    //if cu is in the beaker and mouse: up triggerd
+                    if (options.target === CU_Text &&
+                        options.target.intersectsWithObject(Beaker)) {
+                        cuInBeaker = true;
+                        console.log('cuInBeaker = true;');
+                    }
+                    //if cu is not in the beaker and mouse: up triggerd
+                    if (options.target === CU_Text &&
+                        !options.target.intersectsWithObject(Beaker)) {
+                        cuInBeaker = false;
+                        console.log('cuInBeaker = false;');
+                    }
+
+                    //if o is  in the beaker and mouse: up triggerd
+                    if (options.target === O_Text &&
+                        options.target.intersectsWithObject(Beaker)) {
+                        oInBeaker = true;
+                        console.log('oInBeaker = true;');
+                    }
+                    //if o is not in the beaker and mouse: up triggerd
+                    if (options.target === O_Text &&
+                        !options.target.intersectsWithObject(Beaker)) {
+                        oInBeaker = false;
+                        console.log('oInBeaker = false;');
+                    }
+
+                    //need to check only cu and o are in the beaker
+                    //and nothing else
+                    if (questionState === QuestionState.CUO) {
+                        //if both cu and o are in the beaker
+                        if (cuInBeaker && oInBeaker) { answer = true; }
+
+                        //if cu and o both are still in beaker
+                        //if nothing else is in beaker
+                        if (!cuInBeaker ||
+                            !oInBeaker ||
+                            !checkFlags(QuestionState.CUO)) { answer = false; }
+                    }
+
+                });
+            }
+
+            //called when submit is clicked to decide if answer is correct or wrong
+            function answerText() {
+
+                //state needs to be next question for submit to work
+                if (submitState !== SubmitState.SUBMITTED &&
+                    submitState !== SubmitState.NOCHANCE) {
+                    //console.log('answerText()');
+
+                    //decide if answer is correct or wrong
+                    if (answer) {
+
+                        successFailText.set({ text: 'CORRECT!' });
+                        successFailText.set({ fill: 'green' });
+                        currScore++;
+                        currScoreTxt.set({ text: currScore.toString() });
+                    }
+                    else {
+                        successFailText.set({ text: 'WRONG!' });
+                        successFailText.set({ fill: 'red' });
+                    }
+
+                    cahncesLeft--;
+                    chancesLeftTxt.set({ text: cahncesLeft.toString() });
+
+                    submitState = SubmitState.SUBMITTED;
+
+                    //if no chances left
+                    if (cahncesLeft == 0) {
+                        console.log(cahncesLeft.toString());
+
+                        submitState = SubmitState.NOCHANCE;
+
+                        nextQuestionText.set({
+                            text: ''
+                        });
+
+                        pleaseResetTxt.set({ text: 'All Chances Expired \nplease reset' });
+
+                        mainCanvas.add(nextQuestionText);
+                        mainCanvas.add(pleaseResetTxt);
+
+                        console.log(submitState);
+
+                        return;
+                    }
+
+                    //need used to press next question
+                    nextQuestionText.set({
+                        text: 'Please click \nNext Question'
+                    });
+
+
+                    mainCanvas.add(successFailText);
+                    mainCanvas.add(nextQuestionText);
+                }
+            }
+
+            function resetElements() {
+                //Reset NA_TEXT
+                NA_Text.set({
+                    left: 200,
+                    top: 300,
+                });
+
+                // "add" NA_Text onto canvas
+                mainCanvas.add(NA_Text);
+
+                //Reset CL_TEXT
+                CL_Text.set({
+                    left: 100,
+                    top: 300,
+                });
+
+                // "add" NA_Text onto canvas
+                mainCanvas.add(CL_Text);
+
+                //Reset CU_TEXT
+                CU_Text.set({
+                    left: 200,
+                    top: 270,
+                });
+
+                // "add" CU_Text onto canvas
+                mainCanvas.add(CU_Text);
+
+                //Reset O_TEXT
+                O_Text.set({
+                    left: 100,
+                    top: 270,
+                });
+
+                // "add" O_Text onto canvas
+                mainCanvas.add(O_Text);
+            }
+
+            //reset flags when need be
+            function resetQuestionFlags() {
+                answer = false;
+                naInBeaker = false;
+                clInBeaker = false;
+                cuInBeaker = false;
+                oInBeaker = false;
+            }
+
+            //called when next question button is clicked
+            function nextQuestion() {
+
+                //should not work if there is no chance left
+                //should not work at the start of the game
+                if (submitState !== SubmitState.NOCHANCE) {
+                    console.log(submitState);
+                    console.log(questionState);
+
+                   
+
+                    //decrement chances left after every nextQuestion call
+                    if (cahncesLeft > 0 &&
+                        submitState !== SubmitState.NEXTQUESTION &&
+                        submitState !== SubmitState.INIT) {
+
+                        //get the next reandom question
+                        randomQuestionStates();
+
+                        submitState = SubmitState.NEXTQUESTION;
+
+                        //reset success fail text
+                        successFailText.set({ text: '' });
+
+                        //reset the text that prompts user to click the next question
+                        nextQuestionText.set({
+                            text: ''
+                        });
+
+                        mainCanvas.add(successFailText);
+                        mainCanvas.add(nextQuestionText);
+
+                        //reset all the question flags
+                        resetQuestionFlags();
+
+                        //reset elemets positions
+                        resetElements();
+                    }
+
+                }
+            }
+
+            //can be clicke at any point in the game to reset the game
+            function resetGame() {
+                console.log(submitState);
+                console.log(questionState);
+
+                cahncesLeft = 3;
+
+                currScore = 0;
+
+                submitState = SubmitState.INIT;
+
+                resetQuestionFlags();
+
+                resetElements();
+
+                chancesLeftTxt.set({ text: cahncesLeft.toString() });
+
+                currScoreTxt.set({ text: currScore.toString() });
+
+                successFailText.set({ text: '' });
+
+                pleaseResetTxt.set({ text: '' });
+
+                mainCanvas.add(chancesLeftTxt);
+
+                mainCanvas.add(successFailText);
+
+                mainCanvas.add(pleaseResetTxt);
+
+                randomQuestionStates();
+            }
+
+
+        </script>
+
+        <!-- ////////////////
+    //////BUTTONS//////
+    //////////////// -->
+
+        <div id="leveltwo">
+            <button class="submitButton"
+                    button type=button
+                    onclick="answerText()">
+                Submit
+            </button>
+            
+            <button class="nextQuestionButton"
+                    button type=button
+                    onclick="nextQuestion()">
+               Next Question
+            </button>
+            
+            <button class="resetButton"
+                    button type=button
+                    onclick="resetGame()">
+               Reset
+            </button>
+        </div>
+    </div>
+</body>
+
+<!-- ////////////////
+    //////END///////
+    //////////////// -->
+
+</html>
